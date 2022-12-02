@@ -16,6 +16,7 @@ DEFINE_LOG_CATEGORY(CustomShortcuts)
 
 void FCustomShortcutsModule::StartupModule()
 {
+#if WITH_EDITOR
 	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
 	{
 		TSharedPtr<ISettingsSection> CustomShortcutsSettings = SettingsModule->RegisterSettings("Project", "Plugins", "CustomShortcutsSettings",
@@ -30,25 +31,33 @@ void FCustomShortcutsModule::StartupModule()
 
 	FToolMenuOwnerScoped OwnerScoped(this);
 	UToolMenu* Menu = UToolMenus::Get()->ExtendMenu("LevelEditor.MainMenu.Tools");
-	FToolMenuSection& Section = Menu->AddSection("CustomShortcuts", LOCTEXT("CustomShortcuts", "Custom Shortcuts"));
-	
-	Section.AddEntry(FToolMenuEntry::InitMenuEntry(
+
+
+	if(IsValid(Menu) && FSlateApplication::IsInitialized())
+	{
+		FToolMenuSection& Section = Menu->AddSection("CustomShortcuts", LOCTEXT("CustomShortcuts", "Custom Shortcuts"));
+		Section.AddEntry(FToolMenuEntry::InitMenuEntry(
 		"CustomShortcuts",
 		LOCTEXT("CustomShortcutsRefreshTitle", "Refresh custom shortcuts"),
 		LOCTEXT("WorldPartitionConvertTooltip", "Refreshs the custom shortcuts if you added or removed one to CustomShortcuts project settings"),
 		FSlateIcon(),
 		FUIAction(FExecuteAction::CreateStatic(&FCustomShortcutsModule::RefreshShortcuts))
-	));
+		));
+	}
+
+#endif
 }
 
 void FCustomShortcutsModule::ShutdownModule()
 {
+#if WITH_EDITOR
 	if (ISettingsModule* SettingsModule = FModuleManager::GetModulePtr<ISettingsModule>("Settings"))
 	{
 		SettingsModule->UnregisterSettings("Project", "Plugins", "CustomShortcutsSettings");
 	}
 
 	CleanShortcuts();
+#endif
 }
 
 void FCustomShortcutsModule::RegisterShortcuts()
