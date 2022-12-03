@@ -11,8 +11,6 @@ Custom Shortcuts is a plugin initially released to UE5 to allow designers to mak
 * Build your project using Visual Studio or Rider.
 * Enable the plugin in the Plugin tab 
 ![image](https://user-images.githubusercontent.com/16429096/205249083-f4d0e0e1-df1b-4a96-aa89-faa806f4a77e.png)
-* Enable the Editor Scripting Utilities if it's not
-![image](https://user-images.githubusercontent.com/16429096/205248943-360d2df8-bcb1-4832-a262-2372755c0983.png)
 
 ## How to
 
