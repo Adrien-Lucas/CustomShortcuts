@@ -16,5 +16,11 @@
 			"Type": "Editor",
 			"LoadingPhase": "PostEngineInit"
 		}
+	],
+	"Plugins": [
+		{
+			"Name": "EditorScriptingTools",
+			"Enabled": True
+		}
 	]
 }
