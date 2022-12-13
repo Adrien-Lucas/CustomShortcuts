@@ -69,17 +69,34 @@ FCustomShortcutsInputProcessor::FCustomShortcutsInputProcessor()
 		
 		CustomShortcutsCommands->MapAction(
 			Command,
-			FExecuteAction::CreateLambda([this, i]
+			FExecuteAction::CreateLambda([this, i]()
 			{
-				UCustomShortcutObject* CustomShortcutObject = GetCustomShortcutObjectByCommandID(i);
-				if(IsValid(CustomShortcutObject))
+				if(UCustomShortcutObject* CustomShortcutObject = GetCustomShortcutObjectByCommandID(i); IsValid(CustomShortcutObject))
+				{
+					// Prevents the instance of custom shortcut object from being garbage collected if OnShortcutExecuted has delay
+					CustomShortcutObject->AddToRoot();
+				
 					CustomShortcutObject->OnShortcutExecuted();
+
+					// Release the instance
+					CustomShortcutObject->RemoveFromRoot();
+				}
 			}),
 			FCanExecuteAction::CreateLambda([this, i]
 			{
-				UCustomShortcutObject* CustomShortcutObject = GetCustomShortcutObjectByCommandID(i);
-				if(IsValid(CustomShortcutObject))
-					return CustomShortcutObject->CanExecuteShortcut();
+				if(UCustomShortcutObject* CustomShortcutObject = GetCustomShortcutObjectByCommandID(i); IsValid(CustomShortcutObject))
+				{
+					// Prevents the instance of custom shortcut object from being garbage collected if CanExecuteShortcut has delay
+					CustomShortcutObject->AddToRoot();
+					
+					const bool bCanExecute = CustomShortcutObject->CanExecuteShortcut();
+
+					// Release the instance
+					CustomShortcutObject->RemoveFromRoot();
+
+					return bCanExecute;
+				}
+
 				return false;
 			})
 		);
@@ -94,7 +111,7 @@ UCustomShortcutObject* FCustomShortcutsInputProcessor::GetCustomShortcutObjectBy
 		return nullptr;
 	
 	const TSubclassOf<UCustomShortcutObject> CustomShortcutClass = CustomShortcutsCommands::Get().
-		CustomShortcutObjects[Command];
+		CustomShortcutsClasses[Command];
 
 	if(!IsValid((CustomShortcutClass)))
 		return nullptr;

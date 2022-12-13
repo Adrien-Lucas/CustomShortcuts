@@ -32,7 +32,7 @@ void CustomShortcutsCommandsImpl::RegisterCommands()
 			CustomShortcutObject->DefaultInputChord
 		);
 
-		CustomShortcutObjects.Add(CustomCommands.Last(), CustomShortcutClass);
+		CustomShortcutsClasses.Add(CustomCommands.Last(), CustomShortcutClass);
 	}
 }
 

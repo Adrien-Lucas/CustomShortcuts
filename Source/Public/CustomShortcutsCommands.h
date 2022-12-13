@@ -32,7 +32,7 @@ public:
 
 	TArray<TSharedPtr<FUICommandInfo>> CustomCommands;
 
-	TMap<TSharedPtr<FUICommandInfo>, TSubclassOf<UCustomShortcutObject>> CustomShortcutObjects;
+	TMap<TSharedPtr<FUICommandInfo>, TSubclassOf<UCustomShortcutObject>> CustomShortcutsClasses;
 };
 
 class CustomShortcutsCommands
